@@ -1,0 +1,54 @@
+/* Elements */
+nav.navbar{
+    padding-top:10px;
+    padding-left:30px;
+    padding-right:30px;
+    font-size: 1.3em;
+    transition: font-size ease .15s, height ease .3s;
+}
+nav.navbar.shrink {
+    font-size:16px;
+}
+nav.navbar.shrink .navbar-brand{
+    font-size: 25px;
+}
+body{
+    position: relative;
+    font-size: 16px;
+    font-weight: 400;
+}
+section p {
+    color: #000;
+    font-size: 1.4em;
+}
+a {
+    color: #0067F4;
+}
+a:hover {
+    color: #0067F4;
+}
+form small {
+    font-weight:400;
+}
+footer {
+    color: #000;
+    padding-top: 15px;
+    padding-bottom: 10px;
+}
+footer p {
+    padding-top:10px;
+    padding-bottom:10px;
+}
+
+/* Classes */
+.navbar-brand{
+    font-size: 1.5em;
+}
+.navbar-dark .navbar-nav li .nav-link,
+.navbar-brand{
+    color: #fff;
+    transition: all ease .3s;
+}
+.input-group-text{
+    color: #000;
+}
