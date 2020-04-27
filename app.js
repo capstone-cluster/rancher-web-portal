@@ -27,8 +27,6 @@ server = require("https").createServer(options, app);
 server.listen(port, function () {
   console.log(
     "Express server listening at: https://" +
-      server.address().address +
-      ":" +
-      server.address().port
+    server.address().address + ":" + server.address().port
   );
 });

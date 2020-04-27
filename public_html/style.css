@@ -4,7 +4,6 @@ nav.navbar{
     padding-left:30px;
     padding-right:30px;
     font-size: 1.3em;
-    transition: font-size ease .15s, height ease .3s;
 }
 nav.navbar.shrink {
     font-size:16px;
@@ -47,7 +46,6 @@ footer p {
 .navbar-dark .navbar-nav li .nav-link,
 .navbar-brand{
     color: #fff;
-    transition: all ease .3s;
 }
 .input-group-text{
     color: #000;
