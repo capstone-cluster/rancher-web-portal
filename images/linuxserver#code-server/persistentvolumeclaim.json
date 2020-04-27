@@ -1,0 +1,9 @@
+{
+  "type": "persistentVolumeClaim",
+  "namespaceId": "test2",
+  "accessModes": ["ReadWriteOnce"],
+  "name": "test2vol",
+  "storageClassId": "longhorn",
+  "volumeId": null,
+  "resources": { "requests": { "storage": "8Gi" } }
+}

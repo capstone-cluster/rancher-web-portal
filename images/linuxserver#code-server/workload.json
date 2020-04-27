@@ -1,0 +1,80 @@
+{
+  "hostIPC": false,
+  "hostNetwork": false,
+  "hostPID": false,
+  "paused": false,
+  "type": "workload",
+  "namespaceId": "test2",
+  "scale": 1,
+  "dnsPolicy": "ClusterFirst",
+  "restartPolicy": "Always",
+  "labels": {},
+  "containers": [
+    {
+      "initContainer": false,
+      "restartCount": 0,
+      "stdin": true,
+      "stdinOnce": false,
+      "tty": true,
+      "type": "container",
+      "privileged": false,
+      "allowPrivilegeEscalation": true,
+      "readOnly": false,
+      "runAsNonRoot": false,
+      "namespaceId": "test1",
+      "imagePullPolicy": "Always",
+      "environmentFrom": [],
+      "resources": { "requests": {}, "limits": {} },
+      "capAdd": [],
+      "capDrop": [],
+      "image": "linuxserver/code-server",
+      "ports": [
+        {
+          "containerPort": 8443,
+          "hostPort": 0,
+          "type": "containerPort",
+          "kind": "NodePort",
+          "protocol": "TCP",
+          "name": "webui"
+        }
+      ],
+      "environment": {
+        "PASSWORD": "password",
+        "SUDO_PASSWORD": "password",
+        "TZ": "America/New_York"
+      },
+      "livenessProbe": null,
+      "name": "test2",
+      "volumeMounts": [
+        {
+          "readOnly": false,
+          "type": "volumeMount",
+          "mountPath": "/config",
+          "name": "test2vol"
+        }
+      ]
+    }
+  ],
+  "scheduling": { "node": {} },
+  "statefulSetConfig": {
+    "type": "statefulSetConfig",
+    "podManagementPolicy": "OrderedReady",
+    "revisionHistoryLimit": 10,
+    "volumeClaimTemplates": [],
+    "strategy": "RollingUpdate",
+    "serviceName": "test2"
+  },
+  "name": "test2",
+  "annotations": { "cattle.io/timestamp": "2020-04-26T23:42:15Z" },
+  "volumes": [
+    {
+      "type": "volume",
+      "persistentVolumeClaim": {
+        "readOnly": false,
+        "type": "persistentVolumeClaimVolumeSource",
+        "persistentVolumeClaimId": "test2:test2vol"
+      },
+      "name": "test2vol"
+    }
+  ]
+}

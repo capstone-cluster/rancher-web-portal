@@ -34,6 +34,27 @@ $(document).ready(function () {
     let input_email = $('#input_email').val();
     let input_pass = $('#input_pass').val();
 
+    $.ajax({
+      url: '/api/deploy',
+      type: 'POST',
+      contentType: 'application/json',
+      data: JSON.stringify({
+        image : input_image,
+        email : input_email,
+        pass : input_pass
+      })
+    })
+    .done(function(data) {
+      console.log(data);
+      showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success:&nbsp;<a href="${data}" target="_blank">${data}</a>`);
+    })
+    .fail(function(data) {
+      let errorMsg = data.status + ' ' + data.statusText;
+      console.error("Ajax function returned an error");
+      console.error(errorMsg);
+      showAlert('#inputAlertPlaceholder', 'alert-danger', 'Submit Failed: ' + errorMsg);
+    })
+
     console.log(input_image);
     console.log(input_email);
     console.log(input_pass);
@@ -54,9 +75,25 @@ function getImages(){
     type: 'GET', 
     contentType: 'application/json' 
   }).done(function (data) { 
-    console.log(data);
+    //console.log(data);
     for(i=0; i<data.length; i++){
       $('#input_image').append(`<option value="${i}">${data[i]}</option>`);
     }
   });
+}
+
+function showAlert(selector, alertClass, message) {
+  $(selector).hide();
+  $(selector).html(`<div class='alert alert-dismissable ` + alertClass + `' role='alert'>
+  <span>` + message + `</span>
+  <button type='button' class='close' data-dismiss='alert' aria-label='Close'>
+  <span aria-hidden='true'>&times</span>
+  </button>
+  </div>`);
+  $(selector).slideToggle(400);
+  window.setTimeout(function () {
+    $(selector).slideToggle(400, function () {
+      $(selector).html('');
+    })
+  }, 5000);
 }

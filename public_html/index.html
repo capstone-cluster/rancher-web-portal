@@ -19,6 +19,9 @@
     <br />
     <section>
       <div class="container-fluid justify-content-center">
+        <div class="col-md-8">
+          <div id="inputAlertPlaceholder"></div>
+        </div>
         <form class="needs-validation" id="inputForm" autocomplete="off" novalidate>
           <div class="form-row">
             <div class="col-md-8 mb-3">
@@ -32,8 +35,8 @@
             <div class="col-md-4 mb-3">
               <label for="input_email">Email address</label>
               <div class="input-group">
-                <input type="text" class="form-control typingValidate" id="input_email" maxlength="16" minlength="2"
-                  pattern="[a-z]{2,16}" required />
+                <input type="text" class="form-control typingValidate" id="input_email"
+                  pattern="\b[a-z]{2,16}\b" required />
                 <div class="input-group-append">
                   <div class="input-group-text">@udel.edu</div>
                 </div>
@@ -44,8 +47,8 @@
             </div>
             <div class="col-md-4 mb-3">
               <label for="input_pass">Password</label>
-              <input type="password" class="form-control typingValidate" id="input_pass" maxlength="32" minlength="8"
-                pattern="[\da-zA-Z]{8,32}" required />
+              <input type="password" class="form-control typingValidate" id="input_pass"
+                pattern="\b[\da-zA-Z]{8,32}\b" required />
               <div class="invalid-feedback">
                 Must be 8-32 alphanumeric characters
               </div>
