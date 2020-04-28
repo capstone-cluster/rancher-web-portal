@@ -98,7 +98,7 @@ function deploy(resp, img, email, pass){
 
   deploy_namespace(json_dir, email)
   .then(res => deploy_storage(json_dir, email))
-  .then(res => deploy_workload(json_dir, email))
+  .then(res => deploy_workload(json_dir, email, pass))
   .then(res => get_nodeport(email))
   .then(res => {
     let port = res['ports'][0]['nodePort'];
@@ -152,7 +152,7 @@ function deploy_workload(json_dir, name, pass){
   workload['volumes'][0]["name"] = name+'vol';
   workload['annotations']['cattle.io/timestamp'] = new Date().toISOString();
 
-  console.log(workload);
+  //console.log(workload);
 
   return axios_insecure.post(rancher_endpoint+'/projects/c-rz4m4:p-mfc4z/workload', workload);
 }
