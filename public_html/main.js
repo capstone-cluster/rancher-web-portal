@@ -72,8 +72,19 @@ function getImages(){
     contentType: 'application/json' 
   }).done(function (data) { 
     //console.log(data);
-    for(i=0; i<data.length; i++){
-      $('#input_image').append(`<option value="${i}">${data[i]}</option>`);
+    let sorted = [...data];
+    sorted.sort(); // generate sorted copy to operate on
+
+    for(let i=0; i<sorted.length; i++){
+      let prefix = sorted[i].split('-')[0].trim();
+      f_data = sorted.filter(function(str){return str.indexOf(prefix) !== -1});
+      $('#input_image').append(`<optgroup label="${prefix}">`);
+      for(let j=0; j < f_data.length; j++){
+        let ind = data.indexOf(f_data[j])
+        $('#input_image').append(`<option value="${ind}">&nbsp;&nbsp;&nbsp;&nbsp;${f_data[j]}</option>`);
+      }
+      $('#input_image').append(`</optgroup>`);
+      i += f_data.length-1;
     }
   });
 }
