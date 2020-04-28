@@ -73,15 +73,7 @@ app.post('/api/deploy', function(request, response) {
     response.status(400).end();
   }
   else{
-    let str = deploy(img, email, pass);
-    if(str != null){
-      response.statusMessage = 'Deploy success';
-      response.status(200).end(str);
-    }
-    else{
-      response.statusMessage = 'Deploy failed';
-      response.status(500).end();
-    }
+    deploy(response, img, email, pass);
   }
 });
 
@@ -100,24 +92,64 @@ server.listen(port, function () {
   );
 });
 
-function deploy(img, email, pass){
-
-  let json_dir = './images/'+images_docker[img].replace('/','#');
-  let namespace_raw = fs.readFileSync(json_dir+'/namespace.json');
-  let namespace = JSON.parse(namespace_raw);
-  namespace['name'] = email;
-  console.log(namespace);
+function deploy(resp, img, email, pass){
   
-  axios_insecure.post(rancher_endpoint+'/clusters/c-rz4m4/namespace', namespace)
+  let json_dir = './images/'+images_docker[img].replace('/','#');
+
+  deploy_namespace(json_dir, email)
+  .then(res => deploy_storage(json_dir, email))
+  .then(res => deploy_workload(json_dir, email))
   .then(res => {
-    console.log(`statusCode: ${res.statusCode}`)
-    console.log(res)
+    let server_str = "https://192.168.0.4"; // placeholder
+    resp.statusMessage = 'Deploy success';
+    resp.status(200).end(server_str);
   })
   .catch(error => {
-    console.error(error)
-  })
-  
+    console.error(error);
+    resp.statusMessage = 'Deploy failed';
+    resp.status(500).end();
+  });  
+}
 
-  //return null;
-  return "https://192.168.0.4";
+function deploy_namespace(json_dir, name){
+  let namespace_raw = fs.readFileSync(json_dir+'/namespace.json');
+  let namespace = JSON.parse(namespace_raw);
+
+  namespace['name'] = name;
+
+  //console.log(namespace);
+  
+  return axios_insecure.post(rancher_endpoint+'/clusters/c-rz4m4/namespace', namespace)
+}
+
+function deploy_storage(json_dir, name){
+  let storage_raw = fs.readFileSync(json_dir+'/persistentvolumeclaim.json');
+  let storage = JSON.parse(storage_raw);
+
+  storage['namespaceId'] = name;
+  storage['name'] = name+'vol';
+
+  //console.log(storage);
+
+  return axios_insecure.post(rancher_endpoint+'/projects/c-rz4m4:p-mfc4z/persistentvolumeclaim', storage);
+}
+
+function deploy_workload(json_dir, name, pass){
+  let workload_raw = fs.readFileSync(json_dir+'/workload.json');
+  let workload = JSON.parse(workload_raw);
+  workload['namespaceId'] = name;
+  workload['containers'][0]['namespaceId'] = name;
+  workload['containers'][0]['environment']['PASSWORD'] = pass;
+  workload['containers'][0]['environment']['SUDO_PASSWORD'] = pass;
+  workload['containers'][0]['name'] = name;
+  workload['containers'][0]['volumeMounts'][0]['name'] = name+'vol';
+  workload['statefulSetConfig']['serviceName'] = name;
+  workload['name'] = name;
+  workload['volumes'][0]["persistentVolumeClaim"]["persistentVolumeClaimId"] = name+':'+name+'vol';
+  workload['volumes'][0]["name"] = name+'vol';
+  workload['annotations']['cattle.io/timestamp'] = '2020-04-26T23:42:15Z';
+
+  //console.log(workload);
+
+  return axios_insecure.post(rancher_endpoint+'/projects/c-rz4m4:p-mfc4z/workload', workload);
 }

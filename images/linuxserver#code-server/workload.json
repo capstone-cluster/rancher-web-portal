@@ -4,7 +4,7 @@
   "hostPID": false,
   "paused": false,
   "type": "workload",
-  "namespaceId": "test2",
+  "namespaceId": "",
   "scale": 1,
   "dnsPolicy": "ClusterFirst",
   "restartPolicy": "Always",
@@ -21,7 +21,7 @@
       "allowPrivilegeEscalation": true,
       "readOnly": false,
       "runAsNonRoot": false,
-      "namespaceId": "test1",
+      "namespaceId": "",
       "imagePullPolicy": "Always",
       "environmentFrom": [],
       "resources": { "requests": {}, "limits": {} },
@@ -39,18 +39,18 @@
         }
       ],
       "environment": {
-        "PASSWORD": "password",
-        "SUDO_PASSWORD": "password",
+        "PASSWORD": "",
+        "SUDO_PASSWORD": "",
         "TZ": "America/New_York"
       },
       "livenessProbe": null,
-      "name": "test2",
+      "name": "",
       "volumeMounts": [
         {
           "readOnly": false,
           "type": "volumeMount",
           "mountPath": "/config",
-          "name": "test2vol"
+          "name": ""
         }
       ]
     }
@@ -62,19 +62,19 @@
     "revisionHistoryLimit": 10,
     "volumeClaimTemplates": [],
     "strategy": "RollingUpdate",
-    "serviceName": "test2"
+    "serviceName": ""
   },
-  "name": "test2",
-  "annotations": { "cattle.io/timestamp": "2020-04-26T23:42:15Z" },
+  "name": "",
+  "annotations": { "cattle.io/timestamp": "" },
   "volumes": [
     {
       "type": "volume",
       "persistentVolumeClaim": {
         "readOnly": false,
         "type": "persistentVolumeClaimVolumeSource",
-        "persistentVolumeClaimId": "test2:test2vol"
+        "persistentVolumeClaimId": ""
       },
-      "name": "test2vol"
+      "name": ""
     }
   ]
 }
