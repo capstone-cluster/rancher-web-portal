@@ -45,7 +45,6 @@ $(document).ready(function () {
       })
     })
     .done(function(data) {
-      console.log(data);
       showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success:&nbsp;<a href="${data}" target="_blank">${data}</a>
         <br>Please allow a minute for it to be live`);
     })
@@ -55,10 +54,6 @@ $(document).ready(function () {
       console.error(errorMsg);
       showAlert('#inputAlertPlaceholder', 'alert-danger', 'Submit Failed: ' + errorMsg);
     })
-
-    console.log(input_image);
-    console.log(input_email);
-    console.log(input_pass);
 
     // reset form
     $('#input_email').removeClass('is-valid');
