@@ -99,10 +99,12 @@ function deploy(resp, img, email, pass){
   deploy_namespace(json_dir, email)
   .then(res => deploy_storage(json_dir, email))
   .then(res => deploy_workload(json_dir, email, pass))
+  .then(x => new Promise(resolve => setTimeout(() => resolve(x), 200))) // give rancher a sec to create everything
   .then(res => get_nodeport(email))
   .then(res => {
-    let port = res['ports'][0]['nodePort'];
-    let addr = RANCHER_ENDPOINT.substring(0, RANCHER_ENDPOINT.length-3); // trim /v3 from the end
+    //console.log(res);
+    let port = res.data['ports'][0]['nodePort'];
+    let addr = 'http://'+res.data['publicEndpoints'][0]["addresses"][0];
     let server_str = addr+':'+port;
     resp.statusMessage = 'Deploy success';
     resp.status(200).end(server_str);
@@ -130,7 +132,7 @@ function deploy_storage(json_dir, name){
   let storage = JSON.parse(storage_raw);
 
   storage['namespaceId'] = name;
-  storage['name'] = name+'vol';
+  storage['name'] = name+'-vol';
 
   //console.log(storage);
 
@@ -145,11 +147,11 @@ function deploy_workload(json_dir, name, pass){
   workload['containers'][0]['environment']['PASSWORD'] = pass;
   workload['containers'][0]['environment']['SUDO_PASSWORD'] = pass;
   workload['containers'][0]['name'] = name;
-  workload['containers'][0]['volumeMounts'][0]['name'] = name+'vol';
+  workload['containers'][0]['volumeMounts'][0]['name'] = name+'-vol';
   workload['statefulSetConfig']['serviceName'] = name;
   workload['name'] = name;
-  workload['volumes'][0]["persistentVolumeClaim"]["persistentVolumeClaimId"] = name+':'+name+'vol';
-  workload['volumes'][0]["name"] = name+'vol';
+  workload['volumes'][0]["persistentVolumeClaim"]["persistentVolumeClaimId"] = name+':'+name+'-vol';
+  workload['volumes'][0]["name"] = name+'-vol';
   workload['annotations']['cattle.io/timestamp'] = new Date().toISOString();
 
   //console.log(workload);

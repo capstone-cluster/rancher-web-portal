@@ -46,7 +46,8 @@ $(document).ready(function () {
     })
     .done(function(data) {
       console.log(data);
-      showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success:&nbsp;<a href="${data}" target="_blank">${data}</a>`);
+      showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success:&nbsp;<a href="${data}" target="_blank">${data}</a>
+        <br>Please allow a minute for it to be live`);
     })
     .fail(function(data) {
       let errorMsg = data.status + ' ' + data.statusText;
