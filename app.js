@@ -99,8 +99,11 @@ function deploy(resp, img, email, pass){
   deploy_namespace(json_dir, email)
   .then(res => deploy_storage(json_dir, email))
   .then(res => deploy_workload(json_dir, email))
+  .then(res => get_nodeport(email))
   .then(res => {
-    let server_str = "https://192.168.0.4"; // placeholder
+    let port = res['ports'][0]['nodePort'];
+    let addr = RANCHER_ENDPOINT.substring(0, RANCHER_ENDPOINT.length-3); // trim /v3 from the end
+    let server_str = addr+':'+port;
     resp.statusMessage = 'Deploy success';
     resp.status(200).end(server_str);
   })
@@ -147,9 +150,13 @@ function deploy_workload(json_dir, name, pass){
   workload['name'] = name;
   workload['volumes'][0]["persistentVolumeClaim"]["persistentVolumeClaimId"] = name+':'+name+'vol';
   workload['volumes'][0]["name"] = name+'vol';
-  workload['annotations']['cattle.io/timestamp'] = '2020-04-26T23:42:15Z';
+  workload['annotations']['cattle.io/timestamp'] = new Date().toISOString();
 
-  //console.log(workload);
+  console.log(workload);
 
   return axios_insecure.post(rancher_endpoint+'/projects/c-rz4m4:p-mfc4z/workload', workload);
+}
+
+function get_nodeport(name){
+  return axios_insecure.get(rancher_endpoint+`/project/c-rz4m4:p-mfc4z/services/${name}:${name}-nodeport`);
 }

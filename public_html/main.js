@@ -91,9 +91,4 @@ function showAlert(selector, alertClass, message) {
   </button>
   </div>`);
   $(selector).slideToggle(400);
-  window.setTimeout(function () {
-    $(selector).slideToggle(400, function () {
-      $(selector).html('');
-    })
-  }, 5000);
 }
