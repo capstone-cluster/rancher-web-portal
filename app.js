@@ -145,6 +145,18 @@ function deploy_storage(json_dir, name){
   return axios_insecure.post(rancher_endpoint+'/projects/c-rz4m4:p-mfc4z/persistentvolumeclaim', storage);
 }
 
+function deploy_secret(json_dir, name, pass){
+  let secret_raw = fs.readFileSync(json_dir+'/namespacedsecret.json');
+  let secret = JSON.parse(secret_raw);
+
+  secret['data']['PASSWORD'] = btoa(pass); // accepts base64 encoded strings
+  secret['data']['SUDO_PASSWORD'] = btoa(pass); // accepts base64 encoded strings
+  secret['name'] = name+'-pass';
+  secret['namespaceId'] = name;
+
+  return axios_insecure.post(rancher_endpoint+'/projects/c-rz4m4:p-mfc4z/namespacedsecret', secret);
+}
+
 function deploy_workload(json_dir, name, pass){
   let workload_raw = fs.readFileSync(json_dir+'/workload.json');
   let workload = JSON.parse(workload_raw);
