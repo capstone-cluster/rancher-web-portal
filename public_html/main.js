@@ -1,7 +1,18 @@
 $(document).ready(function () {
   // validate login username field as user types
   $('body').on('keyup', '.typingValidate', function (event) {
-    if (event.target.checkValidity()) {
+    console.log()
+    if(event.target.id === 'input_pass_verify') {
+      if($('#input_pass_verify').val() === $('#input_pass').val()){
+        event.target.classList.remove('is-invalid');
+        event.target.classList.add('is-valid');
+      }
+      else {
+        event.target.classList.remove('is-valid');
+        event.target.classList.add('is-invalid');
+      }
+    }
+    else if (event.target.checkValidity()) {
       event.target.classList.remove('is-invalid');
       event.target.classList.add('is-valid');
     } else {
@@ -72,16 +83,15 @@ function getImages(){
     contentType: 'application/json' 
   }).done(function (data) { 
     //console.log(data);
-    let sorted = [...data];
-    sorted.sort(); // generate sorted copy to operate on
+    data.sort(); // generate sorted copy to operate on
 
-    for(let i=0; i<sorted.length; i++){
-      let prefix = sorted[i].split('-')[0].trim();
-      f_data = sorted.filter(function(str){return str.indexOf(prefix) !== -1});
+    for(let i=0; i<data.length; i++){
+      let prefix = data[i].split('-')[0].trim();
+      f_data = data.filter(function(str){return str.indexOf(prefix) !== -1});
       $('#input_image').append(`<optgroup label="${prefix}">`);
       for(let j=0; j < f_data.length; j++){
         let ind = data.indexOf(f_data[j])
-        $('#input_image').append(`<option value="${ind}">&nbsp;&nbsp;&nbsp;&nbsp;${f_data[j]}</option>`);
+        $('#input_image').append(`<option value="${f_data[j]}">&nbsp;&nbsp;&nbsp;&nbsp;${f_data[j]}</option>`);
       }
       $('#input_image').append(`</optgroup>`);
       i += f_data.length-1;

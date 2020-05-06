@@ -32,7 +32,7 @@
             </div>
           </div>
           <div class="form-row">
-            <div class="col-md-4 mb-3">
+            <div class="col-md-8 mb-3">
               <label for="input_email">Email address</label>
               <div class="input-group">
                 <input type="text" class="form-control typingValidate" id="input_email"
@@ -45,12 +45,22 @@
                 </div>
               </div>
             </div>
+          </div>
+          <div class="form-row">
             <div class="col-md-4 mb-3">
               <label for="input_pass">Password</label>
               <input type="password" class="form-control typingValidate" id="input_pass"
                 pattern="\b[\da-zA-Z]{8,32}\b" required />
               <div class="invalid-feedback">
                 Must be 8-32 alphanumeric characters
+              </div>
+            </div>
+            <div class="col-md-4 mb-3">
+              <label for="input_pass_verify">Verify Password</label>
+              <input type="password" class="form-control typingValidate" id="input_pass_verify"
+                pattern="\b[\da-zA-Z]{8,32}\b" required />
+              <div class="invalid-feedback">
+                Passwords must match
               </div>
             </div>
           </div>
