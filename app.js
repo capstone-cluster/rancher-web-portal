@@ -14,8 +14,12 @@ const host = 'localhost';
 const key_path = './certs/encrypted.key';
 const cert_path = './certs/server.cert';
 
-const images_names = ['Default - VS Code', 'Dr. Novocin - VS Code', 'Dr. Cotton - Nessus', 'Dr. Cotton - OpenVAS'];
-const images_docker = ['linuxserver/code-server', 'linuxserver/code-server', 'linuxserver/code-server', 'linuxserver/code-server'];
+const docker_images = {
+  'Default - VS Code' : 'linuxserver/code-server',
+  'Dr. Novocin - VS Code' : 'linuxserver/code-server',
+  'Dr. Cotton - Nessus' : 'linuxserver/code-server',
+  'Dr. Cotton - OpenVAS' : 'linuxserver/code-server'
+};
 
 dotenv.config();
 const rancher_endpoint = process.env.RANCHER_ENDPOINT;
@@ -48,7 +52,7 @@ app.get('/', function (request, response) {
 
 // Get definintion of the provided word from the dictionary
 app.get('/api/images', function(request, response) {
-  response.send(images_names);
+  response.send(Object.keys(docker_images));
 });
 
 app.post('/api/deploy', function(request, response) {
@@ -56,12 +60,14 @@ app.post('/api/deploy', function(request, response) {
   let email = request.body.email;
   let pass = request.body.pass;
 
+  let images_names = Object.keys(docker_images);
+
   if(img == null || email == null || pass == null){
     response.statusMessage = 'Missing data';
     response.status(400).end();
   }
-  else if(img >= images_names.length){
-    response.statusMessage = 'Image out of range';
+  else if(!images_names.includes(img)){
+    response.statusMessage = 'Docker image is invalid';
     response.status(400).end();
   }
   else if(!RegExp('\\b[a-z]{2,16}\\b').test(email)){
@@ -94,12 +100,12 @@ server.listen(port, function () {
 
 function deploy(resp, img, email, pass){
   
-  let json_dir = './images/'+images_docker[img].replace('/','#');
+  let json_dir = './images/'+docker_images[img].replace('/','#');
 
   deploy_namespace(json_dir, email)
   .then(res => deploy_storage(json_dir, email))
   .then(res => deploy_workload(json_dir, email, pass))
-  .then(x => new Promise(resolve => setTimeout(() => resolve(x), 200))) // give rancher a sec to create everything
+  .then(x => new Promise(resolve => setTimeout(() => resolve(x), 250))) // give rancher a sec to create everything
   .then(res => get_nodeport(email))
   .then(res => {
     //console.log(res);
