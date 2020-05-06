@@ -23,8 +23,17 @@
       "runAsNonRoot": false,
       "namespaceId": "",
       "imagePullPolicy": "Always",
-      "environmentFrom": [],
-      "resources": { "requests": {}, "limits": {} },
+      "environmentFrom": [
+        {
+          "source": "secret",
+          "sourceKey": null,
+          "sourceName": ""
+        }
+      ],
+      "resources": {
+        "requests": {},
+        "limits": {}
+      },
       "capAdd": [],
       "capDrop": [],
       "image": "linuxserver/code-server",
@@ -39,8 +48,6 @@
         }
       ],
       "environment": {
-        "PASSWORD": "",
-        "SUDO_PASSWORD": "",
         "TZ": "America/New_York"
       },
       "livenessProbe": null,
@@ -52,10 +59,12 @@
           "mountPath": "/config",
           "name": ""
         }
-      ]
+      ],
     }
   ],
-  "scheduling": { "node": {} },
+  "scheduling": {
+    "node": {}
+  },
   "statefulSetConfig": {
     "type": "statefulSetConfig",
     "podManagementPolicy": "OrderedReady",
@@ -65,7 +74,9 @@
     "serviceName": ""
   },
   "name": "",
-  "annotations": { "cattle.io/timestamp": "" },
+  "annotations": {
+    "cattle.io/timestamp": ""
+  },
   "volumes": [
     {
       "type": "volume",

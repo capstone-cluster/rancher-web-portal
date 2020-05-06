@@ -104,7 +104,8 @@ function deploy(resp, img, email, pass){
 
   deploy_namespace(json_dir, email)
   .then(res => deploy_storage(json_dir, email))
-  .then(res => deploy_workload(json_dir, email, pass))
+  .then(res => deploy_secret(json_dir, email, pass))
+  .then(res => deploy_workload(json_dir, email))
   .then(x => new Promise(resolve => setTimeout(() => resolve(x), 250))) // give rancher a sec to create everything
   .then(res => get_nodeport(email))
   .then(res => {
@@ -154,16 +155,17 @@ function deploy_secret(json_dir, name, pass){
   secret['name'] = name+'-pass';
   secret['namespaceId'] = name;
 
+  //console.log(secret);
+
   return axios_insecure.post(rancher_endpoint+'/projects/c-rz4m4:p-mfc4z/namespacedsecret', secret);
 }
 
-function deploy_workload(json_dir, name, pass){
+function deploy_workload(json_dir, name){
   let workload_raw = fs.readFileSync(json_dir+'/workload.json');
   let workload = JSON.parse(workload_raw);
   workload['namespaceId'] = name;
   workload['containers'][0]['namespaceId'] = name;
-  workload['containers'][0]['environment']['PASSWORD'] = pass;
-  workload['containers'][0]['environment']['SUDO_PASSWORD'] = pass;
+  workload['containers'][0]['environmentFrom']['sourceName'] = name+'-pass';
   workload['containers'][0]['name'] = name;
   workload['containers'][0]['volumeMounts'][0]['name'] = name+'-vol';
   workload['statefulSetConfig']['serviceName'] = name;
