@@ -25,9 +25,12 @@
       "imagePullPolicy": "Always",
       "environmentFrom": [
         {
+          "optional": false,
+          "prefix": "",
           "source": "secret",
           "sourceKey": null,
-          "sourceName": ""
+          "sourceName": "",
+          "type": "/v3/project/schemas/environmentFrom"
         }
       ],
       "resources": {
@@ -59,7 +62,7 @@
           "mountPath": "/config",
           "name": ""
         }
-      ],
+      ]
     }
   ],
   "scheduling": {

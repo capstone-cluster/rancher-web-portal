@@ -56,8 +56,8 @@ $(document).ready(function () {
       })
     })
     .done(function(data) {
-      showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success:&nbsp;<a href="${data}" target="_blank">${data}</a>
-        <br>Please allow a minute for it to be live`);
+      showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success, waiting for URL...`);
+      getUrl(input_email);
     })
     .fail(function(data) {
       let errorMsg = data.status + ' ' + data.statusText;
@@ -97,6 +97,11 @@ function getImages(){
       i += f_data.length-1;
     }
   });
+}
+
+function getUrl(email) {
+  
+
 }
 
 function showAlert(selector, alertClass, message) {
