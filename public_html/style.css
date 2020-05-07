@@ -73,3 +73,11 @@ footer p {
 .alert-danger a {
     font-weight: 700;
 }
+.alert-warning {
+    color: #856404;
+    background-color: #fff3cd;
+    border-color: #ffeeba;
+}
+.alert-warning a {
+    font-weight: 700;
+}

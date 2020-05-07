@@ -2,8 +2,8 @@ $(document).ready(function () {
   // validate login username field as user types
   $('body').on('keyup', '.typingValidate', function (event) {
     console.log()
-    if(event.target.id === 'input_pass_verify') {
-      if($('#input_pass_verify').val() === $('#input_pass').val()){
+    if (event.target.id === 'input_pass_verify') {
+      if ($('#input_pass_verify').val() === $('#input_pass').val()) {
         event.target.classList.remove('is-invalid');
         event.target.classList.add('is-valid');
       }
@@ -50,17 +50,15 @@ $(document).ready(function () {
       type: 'POST',
       contentType: 'application/json',
       data: JSON.stringify({
-        image : input_image,
-        email : input_email,
-        pass : input_pass
+        image: input_image,
+        email: input_email,
+        pass: input_pass
       })
-    })
-    .done(function(data) {
-      showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success, waiting for URL...`);
-      getUrl(input_email);
-    })
-    .fail(function(data) {
-      let errorMsg = data.status + ' ' + data.statusText;
+    }).done(function (data) {
+      showAlert('#inputAlertPlaceholder', 'alert-success', `Deploy Success, waiting for URL to be active...`);
+      window.setTimeout(function(){ getUrl(input_email, 20) }, 20000); // wait for deployment to be closer to ready
+    }).fail(function (data) {
+      let errorMsg = data.status + ', ' + data.statusText;
       console.error("Ajax function returned an error");
       console.error(errorMsg);
       showAlert('#inputAlertPlaceholder', 'alert-danger', 'Submit Failed: ' + errorMsg);
@@ -76,32 +74,61 @@ $(document).ready(function () {
   getImages(); // get list of deployable containers from server
 });
 
-function getImages(){
-  $.ajax({ 
-    url: '/api/images', 
-    type: 'GET', 
-    contentType: 'application/json' 
-  }).done(function (data) { 
+function getImages() {
+  $.ajax({
+    url: '/api/images',
+    type: 'GET',
+    contentType: 'application/json'
+  }).done(function (data) {
     //console.log(data);
     data.sort(); // generate sorted copy to operate on
 
-    for(let i=0; i<data.length; i++){
+    for (let i = 0; i < data.length; i++) {
       let prefix = data[i].split('-')[0].trim();
-      f_data = data.filter(function(str){return str.indexOf(prefix) !== -1});
+      f_data = data.filter(function (str) { return str.indexOf(prefix) !== -1 });
       $('#input_image').append(`<optgroup label="${prefix}">`);
-      for(let j=0; j < f_data.length; j++){
+      for (let j = 0; j < f_data.length; j++) {
         let ind = data.indexOf(f_data[j])
         $('#input_image').append(`<option value="${f_data[j]}">&nbsp;&nbsp;&nbsp;&nbsp;${f_data[j]}</option>`);
       }
       $('#input_image').append(`</optgroup>`);
-      i += f_data.length-1;
+      i += f_data.length - 1;
     }
-  });
+  }).fail(function (data) {
+    let errorMsg = data.status + ', ' + data.statusText;
+    console.error("Ajax function returned an error");
+    console.error(errorMsg);
+    showAlert('#inputAlertPlaceholder', 'alert-danger', 'Failed to get images: ' + errorMsg);
+  })
 }
 
-function getUrl(email) {
-  
-
+function getUrl(email, tries) {
+  $.ajax({
+    url: '/api/workloadurl',
+    type: 'GET',
+    contentType: 'application/json',
+    data: {
+      email: email
+    }
+  }).done(function (data) {
+    showAlert('#inputAlertPlaceholder', 'alert-success', `Deployment is active:&nbsp;<a href="${data}" target="_blank">${data}</a>`);
+  }).fail(function (data) {
+    if(data.status == '501') { // 501 is used to signify workload not ready
+      console.log("Workload not ready...");
+      if(tries > 1){
+        window.setTimeout(function(){ getUrl(email, tries-1) }, 5000); // re-check every 5s
+      }
+      else{
+        showAlert('#inputAlertPlaceholder', 'alert-warning', `Deployment is taking a long time to be ready, check back at this URL:&nbsp;<a href="${data.responseText}" target="_blank">${data.responseText}</a>`);
+      }
+    }
+    else {
+      let errorMsg = data.status + ', ' + data.statusText;
+      console.error("Ajax function returned an error");
+      console.error(errorMsg);
+      showAlert('#inputAlertPlaceholder', 'alert-danger', 'Failed to get workload URL: ' + errorMsg);
+    }
+  })
 }
 
 function showAlert(selector, alertClass, message) {
