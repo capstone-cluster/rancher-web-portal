@@ -54,7 +54,7 @@ app.get('/', function (request, response) {
   response.sendFile(__dirname + '/public_html/index.html');
 });
 
-// Get definintion of the provided word from the dictionary
+// Get list of docker images available to deploy
 app.get('/api/images', function(request, response) {
   response.send(Object.keys(docker_images));
 });
@@ -87,6 +87,8 @@ app.post('/api/deploy', function(request, response) {
     deploy(response, img, email, pass);
   }
 });
+
+
 
 // Configure an HTTPS server
 const options = {
