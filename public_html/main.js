@@ -67,6 +67,7 @@ $(document).ready(function () {
     // reset form
     $('#input_email').removeClass('is-valid');
     $('#input_pass').removeClass('is-valid');
+    $('#input_pass_verify').removeClass('is-valid');
     $('#inputForm').trigger('reset');
     $($('#inputForm').find('.form-submit-btn')).prop('disabled', true);
   });
